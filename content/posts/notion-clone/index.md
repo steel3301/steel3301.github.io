@@ -1,3 +1,11 @@
+---
+title: "Notion Clone App Project"
+date: 2026-11-13
+draft: false
+summary: "I created a Notion clone named 'Kotion' — a full-stack project built with Next.js App Router, Convex, Clerk, and EdgeStore."
+tags: ["nextjs", "notion-clone", "fullstack"]
+---
+
 # Notion Clone App Project
 
 ![Kotion app screenshot](app.png)

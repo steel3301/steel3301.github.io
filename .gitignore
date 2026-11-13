@@ -1,0 +1,13 @@
+# Hugo build output
+/public/
+/resources/
+
+# Hugo binary (if vendored)
+/bin/
+
+# Build lock
+.hugo_build.lock
+
+# OS
+.DS_Store
+Thumbs.db

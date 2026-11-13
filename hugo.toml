@@ -1,0 +1,43 @@
+baseURL = 'https://steel3301.github.io/'
+title = 'Steel3301 — Blog'
+theme = 'hugo-book'
+defaultContentLanguage = 'en'
+defaultContentLanguageInSubdir = false
+disablePathToLower = true
+enableGitInfo = true
+removePathAccents = true
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.tableOfContents]
+    startLevel = 1
+  [markup.highlight]
+    style = 'base16-snazzy'
+
+[[menu.main]]
+  name = "Home"
+  url = "/"
+  weight = 1
+
+[[menu.main]]
+  name = "Blog"
+  url = "/posts/"
+  weight = 2
+
+[taxonomies]
+  tag = 'tags'
+
+[params]
+  BookSection = "posts"
+  BookTheme = "light"
+  BookSearch = true
+  BookComments = false
+  BookServiceWorker = 'precache'
+  BookPortableLinks = 'warning'
+  description = 'AI/ML engineering blog by Kaustubh Warme'
+  author = 'Kaustubh Warme'
+  github = 'https://github.com/steel3301'
+  linkedin = 'https://www.linkedin.com/in/kaustubh-warme'
+  portfolio = 'https://warme.runs-on.dev'
