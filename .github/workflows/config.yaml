@@ -1,0 +1,92 @@
+# =============================================================================
+# GitHub Actions: Publish Hugo static site to GitHub Pages
+# -----------------------------------------------------------------------------
+# Intended repository: steel3301/steel3301.github.io  (your GitHub Pages site)
+#
+# Copy this file into that repo at: .github/workflows/config.yaml
+#
+# Notes:
+#   * GitHub Pages default build is Jekyll. This workflow replaces it with a
+#     custom Hugo build (static site generator) instead.
+#   * The `steel3301/blog-posts` submodule has been renamed. Update the
+#     submodule URL in .gitmodules (and re-run `git submodule sync`) to point
+#     at the new repo before enabling submodule checkout below.
+#   * This repo (kaustubh-portfolio-website) is a Next.js app, NOT a Hugo site.
+#     Do NOT run this workflow here unless you add a Hugo config + content.
+# =============================================================================
+
+name: Build and Deploy Hugo Site to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:   # allow manual runs from the Actions tab
+
+# GitHub Pages needs these permissions to write the built site.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Only one Pages deploy at a time.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build Hugo site
+    runs-on: ubuntu-latest
+    steps:
+      # ---------------------------------------------------------------
+      # 1. Checkout the Hugo source (+ the blog-posts submodule if used)
+      # ---------------------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # Set to true once the submodule URL is updated in .gitmodules:
+          # submodules: recursive
+          submodules: false
+          fetch-depth: 0
+
+      # ---------------------------------------------------------------
+      # 2. Install Hugo
+      # ---------------------------------------------------------------
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: "0.134.2"   # pin to a version; change to "latest" if you prefer
+          extended: true            # required for SCSS/PostCSS in most themes
+
+      # ---------------------------------------------------------------
+      # 3. Build the static site with Hugo
+      # ---------------------------------------------------------------
+      - name: Build with Hugo
+        env:
+          # User/organization Pages site: served from the root.
+          HUGO_BASEURL: "https://steel3301.github.io/"
+          HUGO_ENVIRONMENT: production
+        run: |
+          hugo --minify \
+            --baseURL "${HUGO_BASEURL}" \
+            --environment "${HUGO_ENVIRONMENT}"
+
+      # ---------------------------------------------------------------
+      # 4. Upload the built site as a Pages artifact
+      # ---------------------------------------------------------------
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./public   # Hugo's default output directory
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4   # deploy-pages (v4 as of this writing)
